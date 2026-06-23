@@ -76,6 +76,29 @@ a {
   font-size: 14px;
 }
 
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logout-button {
+  min-height: 34px;
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  border-radius: 8px;
+  padding: 0 12px;
+  background: rgba(74, 222, 128, 0.08);
+  color: var(--accent);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  border-color: rgba(74, 222, 128, 0.7);
+}
+
 .page {
   width: min(1120px, calc(100% - 32px));
   margin: 0 auto;
@@ -142,6 +165,39 @@ h1 {
 
 .job-form {
   padding: 26px;
+}
+
+.auth-layout {
+  display: grid;
+  min-height: calc(100vh - 190px);
+  place-items: center;
+}
+
+.auth-panel {
+  width: min(420px, 100%);
+  padding: 26px;
+}
+
+.auth-panel h1 {
+  max-width: none;
+  margin-bottom: 24px;
+  font-size: clamp(36px, 6vw, 54px);
+}
+
+.auth-panel input {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: var(--ink);
+  font: inherit;
+  background: var(--surface-soft);
+}
+
+.auth-panel input:focus {
+  outline: 3px solid rgba(74, 222, 128, 0.18);
+  border-color: var(--accent);
 }
 
 .field {

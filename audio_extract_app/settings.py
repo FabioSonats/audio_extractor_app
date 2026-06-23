@@ -95,6 +95,9 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "jobs:index"
+LOGOUT_REDIRECT_URL = "login"
 
 MAX_UPLOAD_MB = int(os.getenv("MAX_UPLOAD_MB", "500"))
 MAX_VIDEO_SECONDS = int(os.getenv("MAX_VIDEO_SECONDS", "3600"))

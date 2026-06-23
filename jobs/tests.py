@@ -1,4 +1,5 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
@@ -6,7 +7,19 @@ from .forms import JobCreateForm
 
 
 class JobViewsTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="tester",
+            password="strong-test-password",
+        )
+
+    def test_index_requires_login(self):
+        response = self.client.get(reverse("jobs:index"))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("login"), response["Location"])
+
     def test_index_loads(self):
+        self.client.force_login(self.user)
         response = self.client.get(reverse("jobs:index"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Transforme video em audio e texto")

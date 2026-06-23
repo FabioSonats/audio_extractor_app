@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Entrar | Audio Extract{% endblock %}
+
+{% block content %}
+<section class="auth-layout">
+  <form class="panel auth-panel" method="post">
+    {% csrf_token %}
+    <p class="eyebrow">Acesso interno</p>
+    <h1>Entrar</h1>
+
+    {% if form.non_field_errors %}
+      <div class="form-error">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <div class="field">
+      <label for="{{ form.username.id_for_label }}">Usuario</label>
+      {{ form.username }}
+      {{ form.username.errors }}
+    </div>
+
+    <div class="field">
+      <label for="{{ form.password.id_for_label }}">Senha</label>
+      {{ form.password }}
+      {{ form.password.errors }}
+    </div>
+
+    <button class="primary-button" type="submit">Entrar</button>
+  </form>
+</section>
+{% endblock %}

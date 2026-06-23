@@ -2,6 +2,7 @@ from pathlib import Path
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -11,6 +12,7 @@ from .models import Job
 from .processing import start_job, transcription_backend_available
 
 
+@login_required
 def index(request):
     if request.method == "POST":
         form = JobCreateForm(request.POST, request.FILES)
@@ -40,11 +42,13 @@ def index(request):
     )
 
 
+@login_required
 def detail(request, job_id):
     job = get_object_or_404(Job, pk=job_id)
     return render(request, "jobs/detail.html", {"job": job})
 
 
+@login_required
 def status(request, job_id):
     job = get_object_or_404(Job, pk=job_id)
     return JsonResponse(
@@ -59,6 +63,7 @@ def status(request, job_id):
     )
 
 
+@login_required
 def download(request, job_id, artifact):
     job = get_object_or_404(Job, pk=job_id)
     paths = {
