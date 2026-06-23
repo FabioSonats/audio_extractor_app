@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Processamento {{ job.id }}{% endblock %}
+
+{% block content %}
+<section class="detail-layout" data-status-url="{% url 'jobs:status' job.id %}">
+  <div class="panel detail-panel">
+    <a class="back-link" href="{% url 'jobs:index' %}">Voltar</a>
+    <div class="detail-header">
+      <div>
+        <p class="eyebrow">Processamento</p>
+        <h1>{{ job.source_url|default:job.original_filename|truncatechars:90 }}</h1>
+      </div>
+      <span id="statusBadge" class="badge status-{{ job.status }}">{{ job.get_status_display }}</span>
+    </div>
+
+    <div class="progress-shell">
+      <div
+        id="progressBar"
+        class="progress-bar status-{{ job.status }}"
+        style="width: {% if job.status == 'done' or job.status == 'failed' %}100{% elif job.status == 'transcribing' %}82{% elif job.status == 'extracting' %}58{% elif job.status == 'downloading' %}32{% else %}10{% endif %}%"
+      ></div>
+    </div>
+    <p id="statusDetail" class="status-detail{% if not job.is_finished %} is-processing{% endif %}">
+      <span id="statusDetailText">
+        {% if job.status_detail %}{{ job.status_detail }}{% else %}Criado em {{ job.created_at|date:"d/m/Y H:i" }}{% endif %}
+      </span>
+      <span id="processingDots" class="processing-dots{% if job.is_finished %} hidden{% endif %}" aria-label="Processando">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </p>
+
+    <div id="errorBox" class="error-box{% if not job.error_message %} hidden{% endif %}">
+      {{ job.error_message }}
+    </div>
+
+    <div class="result-grid">
+      <div class="result-box">
+        <span>Audio</span>
+        {% if job.audio_file_path %}
+          <a class="secondary-button" href="{% url 'jobs:download' job.id 'audio' %}">Baixar audio</a>
+        {% else %}
+          <small>Aguardando extracao.</small>
+        {% endif %}
+      </div>
+
+      <div class="result-box">
+        <span>Transcricao</span>
+        {% if job.transcript_file_path %}
+          <a class="secondary-button" href="{% url 'jobs:download' job.id 'transcript' %}">Baixar texto</a>
+        {% elif job.is_finished and job.wants_transcript %}
+          <small>Transcricao nao gerada.</small>
+        {% elif job.wants_transcript %}
+          <small>Aguardando transcricao.</small>
+        {% else %}
+          <small>Nao solicitada.</small>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if job.transcript %}
+      <section class="transcript-preview">
+        <h2>Texto transcrito</h2>
+        <pre>{{ job.transcript.text }}</pre>
+      </section>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+  const container = document.querySelector("[data-status-url]");
+  const statusUrl = container.dataset.statusUrl;
+  const statusBadge = document.getElementById("statusBadge");
+  const statusDetail = document.getElementById("statusDetail");
+  const statusDetailText = document.getElementById("statusDetailText");
+  const processingDots = document.getElementById("processingDots");
+  const errorBox = document.getElementById("errorBox");
+  const progressBar = document.getElementById("progressBar");
+
+  const progressByStatus = {
+    queued: "10%",
+    downloading: "32%",
+    extracting: "58%",
+    transcribing: "82%",
+    done: "100%",
+    failed: "100%"
+  };
+
+  async function refreshStatus() {
+    const response = await fetch(statusUrl, { headers: { "Accept": "application/json" } });
+    const data = await response.json();
+    statusBadge.textContent = data.status_label;
+    statusBadge.className = `badge status-${data.status}`;
+    progressBar.className = `progress-bar status-${data.status}`;
+    progressBar.style.width = progressByStatus[data.status] || "10%";
+    statusDetailText.textContent = data.status_detail || data.status_label;
+    statusDetail.classList.toggle("is-processing", !data.is_finished);
+    processingDots.classList.toggle("hidden", data.is_finished);
+
+    if (data.error_message) {
+      errorBox.textContent = data.error_message;
+      errorBox.classList.remove("hidden");
+    }
+
+    if (data.is_finished) {
+      window.location.reload();
+      return;
+    }
+
+    window.setTimeout(refreshStatus, 2500);
+  }
+
+  {% if not job.is_finished %}
+    refreshStatus();
+  {% endif %}
+</script>
+{% endblock %}

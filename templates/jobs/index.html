@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Audio Extract{% endblock %}
+
+{% block content %}
+<section class="workspace">
+  <div class="intro">
+    <p class="eyebrow">Ferramenta interna</p>
+    <h1>Transforme video em audio e texto.</h1>
+    <p class="lead">Cole um link ou envie um arquivo. O app processa, salva a tarefa e libera os arquivos para baixar quando terminar.</p>
+  </div>
+
+  <form class="panel job-form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="form-error">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <div class="field">
+      <label for="{{ form.source_url.id_for_label }}">{{ form.source_url.label }}</label>
+      {{ form.source_url }}
+      {{ form.source_url.errors }}
+    </div>
+
+    <div class="divider"><span>ou</span></div>
+
+    <div class="field upload-field">
+      <label for="{{ form.source_file.id_for_label }}">{{ form.source_file.label }}</label>
+      {{ form.source_file }}
+      {{ form.source_file.errors }}
+    </div>
+
+    <div class="options-row">
+      <fieldset class="field compact">
+        <legend>{{ form.audio_format.label }}</legend>
+        <div class="radio-group">
+          {% for choice in form.audio_format %}
+            <label class="radio-pill">{{ choice.tag }} <span>{{ choice.choice_label }}</span></label>
+          {% endfor %}
+        </div>
+      </fieldset>
+
+      <label class="check-card">
+        {{ form.wants_transcript }}
+        <span>
+          <strong>Gerar transcricao</strong>
+          <small>
+            {% if transcription_available %}
+              Whisper local disponivel.
+            {% else %}
+              Sera habilitada no servidor final.
+            {% endif %}
+          </small>
+        </span>
+      </label>
+    </div>
+
+    <button class="primary-button" type="submit">Processar video</button>
+  </form>
+</section>
+
+<section class="recent">
+  <div class="section-heading">
+    <h2>Ultimos processamentos</h2>
+  </div>
+
+  {% if jobs %}
+    <div class="job-list">
+      {% for job in jobs %}
+        <a class="job-item" href="{% url 'jobs:detail' job.id %}">
+          <span class="status-dot status-{{ job.status }}"></span>
+          <span class="job-main">
+            <strong>{{ job.source_url|default:job.original_filename|truncatechars:76 }}</strong>
+            <small>{{ job.get_status_display }} · {{ job.created_at|date:"d/m/Y H:i" }}</small>
+          </span>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty-state">Nenhum processamento ainda.</p>
+  {% endif %}
+</section>
+{% endblock %}

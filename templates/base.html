@@ -1,0 +1,31 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Audio Extract{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}?v=debug-dark-2">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{% url 'jobs:index' %}">
+      <span class="brand-mark">&gt;_</span>
+      <span>Audio Extract</span>
+    </a>
+    <span class="topbar-note">Video para audio e texto</span>
+  </header>
+
+  <main class="page">
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
