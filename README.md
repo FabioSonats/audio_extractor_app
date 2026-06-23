@@ -63,6 +63,29 @@ Se a plataforma permitir worker separado, use o processo `worker` do `Procfile`.
 
 O `Dockerfile` ja instala `ffmpeg` e as dependencias de transcricao, entao prefira deploy por Docker quando a plataforma permitir. O arquivo `render.yaml` deixa a base pronta para criar um Blueprint no Render conectado ao GitHub.
 
+### Deploy no Render com Supabase
+
+1. No Supabase, copie a string Postgres em `Project Settings > Database > Connection string > URI`.
+2. No Render, crie um Blueprint ou Web Service conectado ao repositorio GitHub.
+3. Se criar manualmente, selecione `Docker` como runtime. O `Dockerfile` fica na raiz do repo.
+4. Configure as variaveis de ambiente:
+
+```env
+SECRET_KEY=uma-chave-grande-e-segura
+DEBUG=False
+ALLOWED_HOSTS=seu-app.onrender.com
+CSRF_TRUSTED_ORIGINS=https://seu-app.onrender.com
+DATABASE_URL=postgresql://...
+SUPABASE_URL=https://bgubettsljljqxohfzeg.supabase.co
+SUPABASE_PUBLISHABLE_KEY=sua-chave-publica
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_EMAIL=seu-email@empresa.com
+DJANGO_SUPERUSER_PASSWORD=uma-senha-forte
+JOB_AUTO_START=True
+```
+
+Na primeira inicializacao, o container roda migrations e cria o admin inicial automaticamente quando as variaveis `DJANGO_SUPERUSER_*` existem.
+
 Fluxo sugerido:
 
 ```bash
