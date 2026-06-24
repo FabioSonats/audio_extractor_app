@@ -15,6 +15,7 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 COPY . .
 
+RUN chmod +x scripts/start.sh
 RUN python manage.py collectstatic --noinput
 
-CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py create_admin_from_env && gunicorn audio_extract_app.wsgi:application --bind 0.0.0.0:${PORT:-8000}"]
+CMD ["scripts/start.sh"]
