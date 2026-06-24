@@ -10,7 +10,7 @@ services:
       - key: DEBUG
         value: "False"
       - key: ALLOWED_HOSTS
-        sync: false
+        value: ".onrender.com"
       - key: CSRF_TRUSTED_ORIGINS
         sync: false
       - key: DATABASE_URL
