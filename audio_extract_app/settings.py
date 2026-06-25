@@ -15,11 +15,23 @@ ALLOWED_HOSTS = [
     for host in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
     if host.strip()
 ]
-RENDER_EXTERNAL_HOSTNAME = os.getenv("RENDER_EXTERNAL_HOSTNAME")
-if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
-if not DEBUG and ".onrender.com" not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append(".onrender.com")
+# Hostnames injected by the hosting platform (Render and Railway are both
+# supported; whichever is in use exports its own env var).
+PLATFORM_HOSTNAMES = [
+    host
+    for host in (
+        os.getenv("RENDER_EXTERNAL_HOSTNAME"),
+        os.getenv("RAILWAY_PUBLIC_DOMAIN"),
+    )
+    if host
+]
+for host in PLATFORM_HOSTNAMES:
+    if host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(host)
+if not DEBUG:
+    for wildcard in (".onrender.com", ".up.railway.app"):
+        if wildcard not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(wildcard)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -108,7 +120,6 @@ MAX_UPLOAD_MB = int(os.getenv("MAX_UPLOAD_MB", "500"))
 MAX_VIDEO_SECONDS = int(os.getenv("MAX_VIDEO_SECONDS", "3600"))
 JOB_AUTO_START = os.getenv("JOB_AUTO_START", "True").lower() in {"1", "true", "yes", "on"}
 JOB_RETENTION_HOURS = int(os.getenv("JOB_RETENTION_HOURS", "24"))
-WHISPER_MODEL = os.getenv("WHISPER_MODEL", "base")
 FFMPEG_BINARY = os.getenv("FFMPEG_BINARY", "")
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
@@ -117,7 +128,7 @@ CSRF_TRUSTED_ORIGINS = [
     for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
     if origin.strip()
 ]
-if RENDER_EXTERNAL_HOSTNAME:
-    render_origin = f"https://{RENDER_EXTERNAL_HOSTNAME}"
-    if render_origin not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append(render_origin)
+for host in PLATFORM_HOSTNAMES:
+    origin = host if host.startswith("http") else f"https://{host}"
+    if origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(origin)

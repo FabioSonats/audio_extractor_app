@@ -18,7 +18,7 @@
       <div
         id="progressBar"
         class="progress-bar status-{{ job.status }}"
-        style="width: {% if job.status == 'done' or job.status == 'failed' %}100{% elif job.status == 'transcribing' %}82{% elif job.status == 'extracting' %}58{% elif job.status == 'downloading' %}32{% else %}10{% endif %}%"
+        style="width: {% if job.status == 'done' or job.status == 'failed' %}100{% elif job.status == 'extracting' %}65{% elif job.status == 'downloading' %}35{% else %}10{% endif %}%"
       ></div>
     </div>
     <p id="statusDetail" class="status-detail{% if not job.is_finished %} is-processing{% endif %}">
@@ -45,27 +45,7 @@
           <small>Aguardando extracao.</small>
         {% endif %}
       </div>
-
-      <div class="result-box">
-        <span>Transcricao</span>
-        {% if job.transcript_file_path %}
-          <a class="secondary-button" href="{% url 'jobs:download' job.id 'transcript' %}">Baixar texto</a>
-        {% elif job.is_finished and job.wants_transcript %}
-          <small>Transcricao nao gerada.</small>
-        {% elif job.wants_transcript %}
-          <small>Aguardando transcricao.</small>
-        {% else %}
-          <small>Nao solicitada.</small>
-        {% endif %}
-      </div>
     </div>
-
-    {% if job.transcript %}
-      <section class="transcript-preview">
-        <h2>Texto transcrito</h2>
-        <pre>{{ job.transcript.text }}</pre>
-      </section>
-    {% endif %}
   </div>
 </section>
 
@@ -81,9 +61,8 @@
 
   const progressByStatus = {
     queued: "10%",
-    downloading: "32%",
-    extracting: "58%",
-    transcribing: "82%",
+    downloading: "35%",
+    extracting: "65%",
     done: "100%",
     failed: "100%"
   };

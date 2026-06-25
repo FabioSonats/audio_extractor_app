@@ -6,8 +6,8 @@
 <section class="workspace">
   <div class="intro">
     <p class="eyebrow">Ferramenta interna</p>
-    <h1>Transforme video em audio e texto.</h1>
-    <p class="lead">Cole um link ou envie um arquivo. O app processa, salva a tarefa e libera os arquivos para baixar quando terminar.</p>
+    <h1>Transforme video em audio.</h1>
+    <p class="lead">Cole um link ou envie um arquivo. O app extrai o audio, salva a tarefa e libera o arquivo para baixar quando terminar.</p>
   </div>
 
   <form class="panel job-form" method="post" enctype="multipart/form-data">
@@ -39,20 +39,6 @@
           {% endfor %}
         </div>
       </fieldset>
-
-      <label class="check-card">
-        {{ form.wants_transcript }}
-        <span>
-          <strong>Gerar transcricao</strong>
-          <small>
-            {% if transcription_available %}
-              Whisper local disponivel.
-            {% else %}
-              Sera habilitada no servidor final.
-            {% endif %}
-          </small>
-        </span>
-      </label>
     </div>
 
     <button class="primary-button" type="submit">Processar video</button>

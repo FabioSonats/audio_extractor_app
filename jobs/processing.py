@@ -7,19 +7,11 @@ import threading
 from django.conf import settings
 from django.db import close_old_connections
 
-from .models import Job, Transcript
+from .models import Job
 
 
 class ProcessingError(Exception):
     pass
-
-
-def transcription_backend_available():
-    try:
-        import whisper  # noqa: F401
-    except ImportError:
-        return False
-    return True
 
 
 def job_dir(job):
@@ -139,32 +131,6 @@ def extract_audio(job, video_path, directory):
     return audio_path
 
 
-def transcribe_audio(job, audio_path, directory):
-    job.mark_status(Job.Status.TRANSCRIBING, "Gerando texto com Whisper")
-    try:
-        import whisper
-    except ImportError as exc:
-        raise ProcessingError(
-            "A transcricao nao esta disponivel neste ambiente. O audio foi gerado normalmente."
-        ) from exc
-
-    model = whisper.load_model(settings.WHISPER_MODEL)
-    result = model.transcribe(str(audio_path))
-    text = (result.get("text") or "").strip()
-    language = result.get("language") or ""
-
-    transcript_path = directory / "transcricao.txt"
-    transcript_path.write_text(text, encoding="utf-8")
-    Transcript.objects.update_or_create(
-        job=job,
-        defaults={
-            "text": text,
-            "language": language,
-        },
-    )
-    return transcript_path
-
-
 def process_job(job_id):
     job = None
     try:
@@ -183,16 +149,6 @@ def process_job(job_id):
         audio_path = extract_audio(job, video_path, directory)
         job.audio_file_path = str(audio_path)
         job.save(update_fields=["audio_file_path"])
-
-        if job.wants_transcript:
-            try:
-                transcript_path = transcribe_audio(job, audio_path, directory)
-                job.transcript_file_path = str(transcript_path)
-                job.save(update_fields=["transcript_file_path"])
-            except ProcessingError as exc:
-                job.error_message = str(exc)
-                job.status_detail = "Audio pronto, mas a transcricao nao foi gerada."
-                job.save(update_fields=["error_message", "status_detail"])
 
         job.mark_done()
     except Exception as exc:

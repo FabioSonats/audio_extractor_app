@@ -22,7 +22,7 @@ class JobViewsTests(TestCase):
         self.client.force_login(self.user)
         response = self.client.get(reverse("jobs:index"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Transforme video em audio e texto")
+        self.assertContains(response, "Transforme video em audio")
 
     def test_healthcheck(self):
         response = self.client.get(reverse("healthcheck"))
@@ -31,7 +31,7 @@ class JobViewsTests(TestCase):
 
 class JobCreateFormTests(TestCase):
     def test_requires_one_source(self):
-        form = JobCreateForm(data={"audio_format": "mp3", "wants_transcript": "on"})
+        form = JobCreateForm(data={"audio_format": "mp3"})
         self.assertFalse(form.is_valid())
         self.assertIn("Informe um link ou envie um arquivo", str(form.errors))
 
@@ -41,7 +41,6 @@ class JobCreateFormTests(TestCase):
             data={
                 "source_url": "https://example.com/video",
                 "audio_format": "mp3",
-                "wants_transcript": "on",
             },
             files={"source_file": upload},
         )

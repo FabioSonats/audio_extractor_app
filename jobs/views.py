@@ -9,7 +9,7 @@ from django.urls import reverse
 
 from .forms import JobCreateForm
 from .models import Job
-from .processing import start_job, transcription_backend_available
+from .processing import start_job
 
 
 @login_required
@@ -23,12 +23,7 @@ def index(request):
             messages.success(request, "Processamento criado. Ja coloquei ele para rodar.")
             return redirect("jobs:detail", job_id=job.id)
     else:
-        form = JobCreateForm(
-            initial={
-                "wants_transcript": transcription_backend_available(),
-                "audio_format": Job.AudioFormat.MP3,
-            }
-        )
+        form = JobCreateForm(initial={"audio_format": Job.AudioFormat.MP3})
 
     jobs = Job.objects.all()[:8]
     return render(
@@ -37,7 +32,6 @@ def index(request):
         {
             "form": form,
             "jobs": jobs,
-            "transcription_available": transcription_backend_available(),
         },
     )
 
@@ -68,7 +62,6 @@ def download(request, job_id, artifact):
     job = get_object_or_404(Job, pk=job_id)
     paths = {
         "audio": job.audio_file_path,
-        "transcript": job.transcript_file_path,
     }
     file_path = paths.get(artifact)
     if not file_path:

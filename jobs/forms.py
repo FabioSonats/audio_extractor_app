@@ -7,7 +7,7 @@ from .models import Job
 class JobCreateForm(forms.ModelForm):
     class Meta:
         model = Job
-        fields = ["source_url", "source_file", "audio_format", "wants_transcript"]
+        fields = ["source_url", "source_file", "audio_format"]
         widgets = {
             "source_url": forms.URLInput(
                 attrs={
@@ -17,13 +17,11 @@ class JobCreateForm(forms.ModelForm):
             ),
             "source_file": forms.ClearableFileInput(attrs={"class": "file-input"}),
             "audio_format": forms.RadioSelect(),
-            "wants_transcript": forms.CheckboxInput(attrs={"class": "checkbox"}),
         }
         labels = {
             "source_url": "Link do video",
             "source_file": "Arquivo de video",
             "audio_format": "Formato do audio",
-            "wants_transcript": "Gerar texto transcrito",
         }
 
     def clean(self):

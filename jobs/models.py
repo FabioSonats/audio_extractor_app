@@ -13,7 +13,6 @@ class Job(models.Model):
         QUEUED = "queued", "Na fila"
         DOWNLOADING = "downloading", "Baixando video"
         EXTRACTING = "extracting", "Extraindo audio"
-        TRANSCRIBING = "transcribing", "Transcrevendo"
         DONE = "done", "Concluido"
         FAILED = "failed", "Falhou"
 
@@ -27,13 +26,11 @@ class Job(models.Model):
     source_file = models.FileField(upload_to="uploads/%Y/%m/%d/", blank=True, null=True)
     original_filename = models.CharField(max_length=255, blank=True)
     audio_format = models.CharField(max_length=10, choices=AudioFormat.choices, default=AudioFormat.MP3)
-    wants_transcript = models.BooleanField(default=True)
     status = models.CharField(max_length=30, choices=Status.choices, default=Status.QUEUED)
     status_detail = models.CharField(max_length=255, blank=True)
     error_message = models.TextField(blank=True)
     video_file_path = models.CharField(max_length=500, blank=True)
     audio_file_path = models.CharField(max_length=500, blank=True)
-    transcript_file_path = models.CharField(max_length=500, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     started_at = models.DateTimeField(blank=True, null=True)
     finished_at = models.DateTimeField(blank=True, null=True)
@@ -66,14 +63,3 @@ class Job(models.Model):
         self.status = self.Status.DONE
         self.finished_at = timezone.now()
         self.save(update_fields=["status", "finished_at"])
-
-
-class Transcript(models.Model):
-    job = models.OneToOneField(Job, on_delete=models.CASCADE, related_name="transcript")
-    text = models.TextField()
-    language = models.CharField(max_length=50, blank=True)
-    duration_seconds = models.PositiveIntegerField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Transcricao de {self.job_id}"
