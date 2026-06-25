@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Audio Extract | Tire o audio de qualquer video{% endblock %}
+
+{% block content %}
+<section class="landing">
+  <div class="hero">
+    <p class="eyebrow">Ferramenta interna</p>
+    <h1>Tire o audio de qualquer video em segundos.</h1>
+    <p class="lead">
+      Cole um link do YouTube ou envie um arquivo de video. O Audio Extract baixa,
+      converte e entrega o audio pronto para baixar em MP3 ou WAV. Tudo pelo
+      navegador, sem instalar nada.
+    </p>
+    <div class="cta-row">
+      <a class="primary-button" href="{% url 'signup' %}">Criar conta</a>
+      <a class="ghost-button" href="{% url 'login' %}">Ja tenho conta</a>
+    </div>
+  </div>
+
+  <div class="landing-block">
+    <h2>Como funciona</h2>
+    <div class="card-grid">
+      <div class="info-card">
+        <span class="step-num">1</span>
+        <strong>Envie o video</strong>
+        <p>Cole o link de um video ou faca upload de um arquivo do seu computador.</p>
+      </div>
+      <div class="info-card">
+        <span class="step-num">2</span>
+        <strong>O app extrai o audio</strong>
+        <p>Baixamos e convertemos automaticamente. Voce acompanha o progresso em tempo real.</p>
+      </div>
+      <div class="info-card">
+        <span class="step-num">3</span>
+        <strong>Baixe pronto</strong>
+        <p>Quando terminar, o audio fica disponivel para download em MP3 ou WAV.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="landing-block">
+    <h2>Por que usar</h2>
+    <div class="card-grid">
+      <div class="info-card">
+        <strong>Rapido e simples</strong>
+        <p>Sem editores complicados. Em poucos cliques voce tem o audio na mao.</p>
+      </div>
+      <div class="info-card">
+        <strong>Nada para instalar</strong>
+        <p>Funciona 100% pelo navegador. Nenhum programa no seu computador.</p>
+      </div>
+      <div class="info-card">
+        <strong>Seu historico, so seu</strong>
+        <p>Cada pessoa ve apenas os proprios processamentos. Privado por padrao.</p>
+      </div>
+      <div class="info-card">
+        <strong>MP3 ou WAV</strong>
+        <p>Escolha o formato ideal para podcast, transcricao, edicao ou arquivo.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="landing-final">
+    <h2>Pronto para comecar?</h2>
+    <p class="lead">Crie sua conta com o codigo de convite da equipe e extraia seu primeiro audio agora.</p>
+    <div class="cta-row">
+      <a class="primary-button" href="{% url 'signup' %}">Criar conta</a>
+      <a class="ghost-button" href="{% url 'login' %}">Entrar</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

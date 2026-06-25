@@ -60,7 +60,7 @@ def run_command(args, cwd=None):
 
 
 def download_video(job, directory):
-    job.mark_status(Job.Status.DOWNLOADING, "Buscando o video no link informado")
+    job.mark_status(Job.Status.DOWNLOADING, "Baixando o audio do link informado")
     output_template = str(directory / "source.%(ext)s")
     run_command(
         [

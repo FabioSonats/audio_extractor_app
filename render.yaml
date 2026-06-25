@@ -23,3 +23,5 @@ services:
         sync: false
       - key: JOB_AUTO_START
         value: "True"
+      - key: SIGNUP_INVITE_CODE
+        sync: false

@@ -9,17 +9,19 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="{% url 'jobs:index' %}">
+    <a class="brand" href="{% url 'landing' %}">
       <span class="brand-mark">&gt;_</span>
       <span>Audio Extract</span>
     </a>
     <div class="topbar-actions">
-      <span class="topbar-note">Video para audio e texto</span>
+      <span class="topbar-note">Video para audio</span>
       {% if user.is_authenticated %}
         <form method="post" action="{% url 'logout' %}">
           {% csrf_token %}
           <button class="logout-button" type="submit">Sair</button>
         </form>
+      {% else %}
+        <a class="logout-button" href="{% url 'login' %}">Entrar</a>
       {% endif %}
     </div>
   </header>

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Criar conta | Audio Extract{% endblock %}
+
+{% block content %}
+<section class="auth-layout">
+  <form class="panel auth-panel" method="post">
+    {% csrf_token %}
+    <p class="eyebrow">Acesso interno</p>
+    <h1>Criar conta</h1>
+
+    {% if form.non_field_errors %}
+      <div class="form-error">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <div class="field">
+      <label for="{{ form.username.id_for_label }}">Usuario</label>
+      {{ form.username }}
+      {{ form.username.errors }}
+    </div>
+
+    <div class="field">
+      <label for="{{ form.invite_code.id_for_label }}">Codigo de convite</label>
+      {{ form.invite_code }}
+      {{ form.invite_code.errors }}
+    </div>
+
+    <div class="field">
+      <label for="{{ form.password1.id_for_label }}">Senha</label>
+      {{ form.password1 }}
+      {{ form.password1.errors }}
+    </div>
+
+    <div class="field">
+      <label for="{{ form.password2.id_for_label }}">Confirme a senha</label>
+      {{ form.password2 }}
+      {{ form.password2.errors }}
+    </div>
+
+    <button class="primary-button" type="submit">Criar conta</button>
+
+    <p class="auth-switch">Ja tem conta? <a href="{% url 'login' %}">Entrar</a></p>
+  </form>
+</section>
+{% endblock %}

@@ -41,8 +41,10 @@ class JobCreateForm(forms.ModelForm):
 
         return cleaned
 
-    def save(self, commit=True):
+    def save(self, commit=True, owner=None):
         job = super().save(commit=False)
+        if owner is not None:
+            job.owner = owner
         if self.cleaned_data.get("source_url"):
             job.source_type = Job.SourceType.URL
         else:

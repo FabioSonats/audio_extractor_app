@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Cadastro indisponivel | Audio Extract{% endblock %}
+
+{% block content %}
+<section class="auth-layout">
+  <div class="panel auth-panel">
+    <p class="eyebrow">Acesso interno</p>
+    <h1>Cadastro indisponivel</h1>
+    <p class="lead">O cadastro nao esta liberado neste momento. Fale com a equipe para receber acesso.</p>
+    <p class="auth-switch"><a href="{% url 'login' %}">Voltar para o login</a></p>
+  </div>
+</section>
+{% endblock %}

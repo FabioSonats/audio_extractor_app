@@ -114,12 +114,13 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "jobs:index"
-LOGOUT_REDIRECT_URL = "login"
+LOGOUT_REDIRECT_URL = "landing"
 
 MAX_UPLOAD_MB = int(os.getenv("MAX_UPLOAD_MB", "500"))
 MAX_VIDEO_SECONDS = int(os.getenv("MAX_VIDEO_SECONDS", "3600"))
 JOB_AUTO_START = os.getenv("JOB_AUTO_START", "True").lower() in {"1", "true", "yes", "on"}
 JOB_RETENTION_HOURS = int(os.getenv("JOB_RETENTION_HOURS", "24"))
+SIGNUP_INVITE_CODE = os.getenv("SIGNUP_INVITE_CODE", "")
 FFMPEG_BINARY = os.getenv("FFMPEG_BINARY", "")
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

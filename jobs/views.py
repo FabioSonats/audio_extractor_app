@@ -17,7 +17,7 @@ def index(request):
     if request.method == "POST":
         form = JobCreateForm(request.POST, request.FILES)
         if form.is_valid():
-            job = form.save()
+            job = form.save(owner=request.user)
             if settings.JOB_AUTO_START:
                 start_job(job.id)
             messages.success(request, "Processamento criado. Ja coloquei ele para rodar.")
@@ -25,7 +25,7 @@ def index(request):
     else:
         form = JobCreateForm(initial={"audio_format": Job.AudioFormat.MP3})
 
-    jobs = Job.objects.all()[:8]
+    jobs = Job.objects.filter(owner=request.user)[:8]
     return render(
         request,
         "jobs/index.html",
@@ -38,13 +38,13 @@ def index(request):
 
 @login_required
 def detail(request, job_id):
-    job = get_object_or_404(Job, pk=job_id)
+    job = get_object_or_404(Job, pk=job_id, owner=request.user)
     return render(request, "jobs/detail.html", {"job": job})
 
 
 @login_required
 def status(request, job_id):
-    job = get_object_or_404(Job, pk=job_id)
+    job = get_object_or_404(Job, pk=job_id, owner=request.user)
     return JsonResponse(
         {
             "status": job.status,
@@ -59,7 +59,7 @@ def status(request, job_id):
 
 @login_required
 def download(request, job_id, artifact):
-    job = get_object_or_404(Job, pk=job_id)
+    job = get_object_or_404(Job, pk=job_id, owner=request.user)
     paths = {
         "audio": job.audio_file_path,
     }

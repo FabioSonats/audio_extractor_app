@@ -1,5 +1,6 @@
 import uuid
 
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
@@ -11,7 +12,7 @@ class Job(models.Model):
 
     class Status(models.TextChoices):
         QUEUED = "queued", "Na fila"
-        DOWNLOADING = "downloading", "Baixando video"
+        DOWNLOADING = "downloading", "Baixando audio"
         EXTRACTING = "extracting", "Extraindo audio"
         DONE = "done", "Concluido"
         FAILED = "failed", "Falhou"
@@ -21,6 +22,13 @@ class Job(models.Model):
         WAV = "wav", "WAV"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="jobs",
+        null=True,
+        blank=True,
+    )
     source_type = models.CharField(max_length=20, choices=SourceType.choices)
     source_url = models.URLField(blank=True)
     source_file = models.FileField(upload_to="uploads/%Y/%m/%d/", blank=True, null=True)
